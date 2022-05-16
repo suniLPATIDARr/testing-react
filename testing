@@ -1,0 +1,43 @@
+You may want to avoid the following implementation details:
+
+Internal state of a component
+Internal methods of a component
+Lifecycle methods of a component
+Child components
+
+Single Elements
+getBy...: Returns the matching node for a query, and throw a descriptive error if no elements match or if more than one match is found (use getAllBy instead if more than one element is expected).
+
+    queryBy...: Returns the matching node for a query, and return null if no elements match. This is useful for asserting an element that is not present. Throws an error if more than one match is found (use queryAllBy instead if this is OK).
+
+    findBy...: Returns a Promise which resolves when an element is found which matches the given query. The promise is rejected if no element is found or if more than one element is found after a default timeout of 1000ms. If you need to find more than one element, use findAllBy.
+
+Multiple Elements
+getAllBy...: Returns an array of all matching nodes for a query, and throws an error if no elements match.
+
+    queryAllBy...: Returns an array of all matching nodes for a query, and return an empty array ([]) if no elements match.
+
+    findAllBy...: Returns a promise which resolves to an array of elements when any elements are found which match the given query. The promise is rejected if no elements are found after a default timeout of 1000ms.
+    findBy methods are a combination of getBy\* queries and waitFor. They accept the waitFor options as the last argument (i.e. await screen.findByText('text', queryOptions, waitForOptions))
+
+Priority
+
+1.  Queries Accessible to Everyone:
+    getByRole: This can be used to query every element that is exposed in the accessibility tree. With the name option you can filter the returned elements by their accessible name. This should be your top preference for just about everything. There's not much you can't get with this (if you can't, it's possible your UI is inaccessible). Most often, this will be used with the name option like so: getByRole('button', {name: /submit/i}). Check the list of roles.
+
+        getByLabelText: This method is really good for form fields. When navigating through a website form, users find elements using label text. This method emulates that behavior, so it should be your top preference.
+
+        getByPlaceholderText: A placeholder is not a substitute for a label. But if that's all you have, then it's better than alternatives.
+
+        getByText: Outside of forms, text content is the main way users find elements. This method can be used to find non-interactive elements (like divs, spans, and paragraphs).
+
+        getByDisplayValue: The current value of a form element can be useful when navigating a page with filled-in values.
+
+2.  Semantic Queries HTML5 and ARIA compliant selectors. Note that the user experience of interacting with these attributes varies greatly across browsers and assistive technology.
+
+        getByAltText: If your element is one which supports alt text (img, area, input, and any custom element), then you can use this to find that element.
+
+        getByTitle: The title attribute is not consistently read by screenreaders, and is not visible by default for sighted users
+
+3.  Test IDs
+    getByTestId: The user cannot see (or hear) these, so this is only recommended for cases where you can't match by role or text or it doesn't make sense (e.g. the text is dynamic).
