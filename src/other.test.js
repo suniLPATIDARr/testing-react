@@ -1,4 +1,5 @@
-import {render, screen} from '@testing-library/react';
+import {render, screen, fireEvent} from '@testing-library/react'
+
 import App from './App';
 
 test('testing simple',()=>{
@@ -25,4 +26,16 @@ test('title',()=>{
     render(<App/>);
     const deleteElement = screen.getByTitle('Delete')
     expect(deleteElement).toBeInTheDocument();
+})
+
+
+const Button = ({onClick, children}) => (
+  <button onClick={onClick}>{children}</button>
+)
+
+test('calls onClick prop when clicked', () => {
+  const handleClick = jest.fn()
+  render(<Button onClick={handleClick}>Click Me</Button>)
+  fireEvent.click(screen.getByText(/click me/i))
+  expect(handleClick).toHaveBeenCalledTimes(1)
 })
